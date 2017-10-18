@@ -1,7 +1,7 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
+const execSync = require('child_process').execSync;
 const path = require('path');
 const url = require('url');
-const exec = require('child_process').exec;
 const autosub = path.join(__dirname, 'bin/macos/autosub/autosub');
 
 let mainWindow;
@@ -39,16 +39,7 @@ app.on('activate', function () {
 });
 
 ipcMain.on('openFile', (event, file) => {
-    inputFile = file;
-    spawnAutosub(file + ' -S en -D en', '', function(e) {
-        console.log(e);
-    })
+    inputFile = file[0];
+    let outputFile = inputFile.replace('mp4', 'srt');
+    execSync(autosub + ' ' + inputFile + ' -S en -D en -o ' + outputFile, {stdio:[0,1,2]});
 });
-
-function spawnAutosub(command, options, callback) {
-    if (typeof options === 'function') {
-        callback = options;
-        options = null
-    }
-    exec(autosub + ' ' + command, options, callback);
-}
