@@ -1,19 +1,15 @@
-"use strict";
-const {dialog} = require('electron').remote;
+const {remote, ipcRenderer} = require('electron');
 
-let inputFile = null;
 let openFileButton = document.getElementById('openFile');
 
-
-
 openFileButton.onclick = function (e) {
-    dialog.showOpenDialog({
+    remote.dialog.showOpenDialog({
         properties: ['openFile'],
         filters: [
             {name: 'Video', extensions: ['mkv', 'avi', 'mp4', 'webm', 'flv']},
             {name: 'Audio', extensions: ['mp3', 'wav', 'flac']}
         ]
     }, function (filePaths) {
-
+        ipcRenderer.send('openFile', filePaths);
     });
 };
